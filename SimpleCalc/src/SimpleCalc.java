@@ -4,51 +4,75 @@ import java.util.Scanner;
 
 public class SimpleCalc {
 
-    private static int retryCounter = 3;
-
-    private static double scanInput() throws InputMismatchException {
+    private static double scanNumInput() {
         double value;
 
         Scanner scanner = new Scanner(System.in);
         scanner.useLocale(Locale.ENGLISH);
-        retryCounter--;
 
         try {
             value = scanner.nextDouble();
-            retryCounter = 3;
         } catch (InputMismatchException e) {
-            if (retryCounter <= 0 ) {
-                throw new InputMismatchException("Wrong input data");
-            }
-            System.out.println("You have " + retryCounter + " attempts.\n" +
-                    "Please retype current number:");
-            return scanInput();
+            System.out.print("Wrong input current value. Use digits only: ");
+            return scanNumInput();
         }
 
         return value;
     }
 
-    public static void main(String[] args) {
-        double firstNumber;
-        double secondNumber;
+    private static char scanCharInput() {
+        String value;
+        Scanner scanner = new Scanner(System.in);
+        scanner.useLocale(Locale.ENGLISH);
 
         try {
-            System.out.println("Please input first number:");
-            firstNumber = scanInput();
-            System.out.println("Your input " + firstNumber + " as a first number.");
-
-            System.out.println("Please input second number:");
-            secondNumber = scanInput();
-            System.out.println("Your input " + secondNumber + " as a second number.");
+            String pattern = "[*/+-]";
+            value = scanner.next(pattern);
         } catch (InputMismatchException e) {
-            System.out.println(e.getMessage());
-            return;
+            System.out.print("Wrong input operation symbol. Use *, /, + or -. Please retype it: ");
+            return scanCharInput();
         }
 
-        System.out.println("Your");
-        System.out.println("Sum is " + (firstNumber + secondNumber));
-        System.out.println("Difference is " + (firstNumber > secondNumber ? firstNumber - secondNumber : secondNumber - firstNumber));
-        System.out.println("Multiplication is " + (firstNumber * secondNumber));
-        System.out.println("Division is " + (secondNumber == 0 ? "ERROR: \"Can't have division by zero\"" : firstNumber / secondNumber));
+        return value.charAt(0);
+    }
+
+    public static void main(String[] args) {
+        double firstNumber;
+        char operation;
+        double secondNumber;
+
+        System.out.print("Please input first number: ");
+        firstNumber = scanNumInput();
+
+        System.out.print("Please input operation symbol: ");
+        operation = scanCharInput();
+
+        System.out.print("Please input second number: ");
+        for (;;) {
+            secondNumber = scanNumInput();
+            if (operation == '/' && secondNumber == 0) {
+                System.out.print("Second value can't be 0 for operation /. Please retype it: ");
+                continue;
+            }
+            break;
+        }
+
+        double res = 0;
+        switch (operation) {
+            case '+':
+                res = firstNumber + secondNumber;
+                break;
+            case '-':
+                res = firstNumber - secondNumber;
+                break;
+            case '*':
+                res = firstNumber * secondNumber;
+                break;
+            case '/':
+                res = firstNumber / secondNumber;
+                break;
+        }
+
+        System.out.println("Your result: " + firstNumber + " " + operation + " " + secondNumber + " = " + res);
     }
 }

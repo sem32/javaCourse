@@ -1,4 +1,4 @@
-package Subject;
+package subject;
 
 import java.util.Date;
 

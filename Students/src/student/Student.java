@@ -1,3 +1,5 @@
+package student;
+
 import subject.Subject;
 
 import java.util.List;

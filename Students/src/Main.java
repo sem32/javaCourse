@@ -1,3 +1,5 @@
+import groupStudents.Group;
+import student.Student;
 
 public class Main {
 
@@ -27,7 +29,7 @@ public class Main {
         initGroupB();
 
         /* Add new student to group */
-        groupA.add(new Student("New Student"));
+        groupA.add(new Student("New student"));
 
         /* Delete existing student from group */
         groupA.delete("Docker");

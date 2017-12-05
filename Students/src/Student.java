@@ -1,10 +1,8 @@
 import subject.Subject;
-import com.sun.istack.internal.NotNull;
 
 import java.util.List;
 
 public class Student {
-    @NotNull
     private String surename;
 
     private List<Subject> subjects;

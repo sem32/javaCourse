@@ -11,6 +11,9 @@ public class MyArrayList {
     }
 
     public int getSize() {
+        if (array == null) {
+            return 0;
+        }
         return this.array.length;
     }
 

@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -7,6 +9,20 @@ public class Main {
         arr.add(8);
         arr.add(44);
         arr.add("Test");
+
+        System.out.println("Test iterator");
+        Iterator iterator = arr.iterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+        System.out.println("------------------------");
+
+        System.out.println("Test Iterable foreach");
+        for(Object o : arr.getIterable()) {
+            System.out.println(o);
+        }
+        System.out.println("------------------------");
+
         System.out.println("Test add (3, 8, 44, 'Test') result: " + arr);
         System.out.println("------------------------");
 
@@ -35,7 +51,7 @@ public class Main {
         foo.add(54);
         foo.add("new value");
         arr.addAll(foo);
-        System.out.println("After addAll: " + foo + " retult:" + arr);
+        System.out.println("After addAll: " + foo + " result:" + arr);
         System.out.println("------------------------");
 
         // Check retainAll(Collection c)

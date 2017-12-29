@@ -3,10 +3,20 @@ import java.util.Iterator;
 
 public class LinkedList implements Collection {
 
+    private final boolean ADD_TO_HEAD = false;
+
+    private Node head;
+
+    private Node tail;
+
+    private int size = 0;
+
     private static class Node {
         private Object data;
 
         private Node next = null;
+
+        private Node prev = null;
 
         private Node(Object data) {
             this.data = data;
@@ -18,9 +28,26 @@ public class LinkedList implements Collection {
         }
     }
 
-    private Node head;
+    private class LinkedListIterable implements Iterable {
+        private Node current = head;
 
-    private int size = 0;
+        @Override
+        public Iterator iterator() {
+            return new Iterator() {
+                @Override
+                public boolean hasNext() {
+                    return current != null;
+                }
+
+                @Override
+                public Object next() {
+                    Object result = current.data;
+                    current = current.next;
+                    return result;
+                }
+            };
+        }
+    }
 
     @Override
     public int size() {
@@ -35,31 +62,51 @@ public class LinkedList implements Collection {
     @Override
     public boolean add(Object o) {
         Node new_item = new Node(o);
-        if (head == null) {
-            head = new_item;
+        if (ADD_TO_HEAD) {
+            if (head == null) {
+                head = new_item;
+                tail = new_item;
+            } else {
+                new_item.next = head;
+                head.prev = new_item;
+                head = new_item;
+            }
         } else {
-            new_item.next = head;
-            head = new_item;
+            if (head == null) {
+                head = new_item;
+                tail = new_item;
+            } else {
+                tail.next = new_item;
+                new_item.prev = tail;
+                tail = new_item;
+            }
         }
         size++;
         return true;
     }
 
+    private void removeCurrent(Node current) {
+        if (current.next != null) {
+            current.next.prev = current.prev;
+        } else {
+            tail = current.prev;
+        }
+        if (current.prev != null) {
+            current.prev.next = current.next;
+        } else {
+            head = current.next;
+        }
+    }
+
     @Override
     public boolean remove(Object o) {
         Node current = head;
-        Node prev = null;
         while (current != null) {
             if (o.equals(current.data)) {
-                if (prev != null) {
-                    prev.next = current.next;
-                } else {
-                    head = current.next;
-                }
+                removeCurrent(current);
                 size--;
                 return true;
             }
-            prev = current;
             current = current.next;
         }
         return false;
@@ -94,7 +141,11 @@ public class LinkedList implements Collection {
 
     @Override
     public Iterator iterator() {
-        return null;
+        return new LinkedListIterable().iterator();
+    }
+
+    public Iterable getIterable() {
+        return new LinkedListIterable();
     }
 
     @Override
@@ -111,11 +162,18 @@ public class LinkedList implements Collection {
 
     @Override
     public Object[] toArray(Object[] a) {
-        Object[] result = new Object[a.length];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
+        int index = 0;
+        if (a.length < size) {
+            return toArray();
+        } else {
+            for (Object o: getIterable()) {
+                a[index++] = o;
+            }
+            for (int i = index; i < a.length; i++) {
+                a[i] = null;
+            }
+            return a;
         }
-        return result;
     }
 
     private boolean isContainsArray(Object[] array, Object value) {
@@ -130,17 +188,10 @@ public class LinkedList implements Collection {
     public boolean retainAll(Collection c) {
         Object[] input = c.toArray();
         Node current = head;
-        Node prev = null;
         while (current != null) {
             if (!isContainsArray(input, current.data)) {
-                if (prev != null) {
-                    prev.next = current.next;
-                } else {
-                    head = current.next;
-                }
+                removeCurrent(current);
                 size--;
-            } else {
-                prev = current;
             }
             current = current.next;
         }
@@ -173,13 +224,11 @@ public class LinkedList implements Collection {
     @Override
     public String toString() {
         String result = "";
-        Node current = head;
-        while (current != null) {
+        for (Object o: getIterable()) {
             if (!result.isEmpty()) {
                 result += ", ";
             }
-            result += current.toString();
-            current = current.next;
+            result += o;
         }
         return "{" + result + "}";
     }

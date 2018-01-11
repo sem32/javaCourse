@@ -18,7 +18,7 @@ public class Main {
         System.out.println("------------------------");
 
         System.out.println("Test Iterable foreach");
-        for(Object o : arr.getIterable()) {
+        for(Object o : arr) {
             System.out.println(o);
         }
         System.out.println("------------------------");

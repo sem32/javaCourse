@@ -28,24 +28,19 @@ public class LinkedList implements Collection {
         }
     }
 
-    private class LinkedListIterable implements Iterable {
+    private class LinkedListIterator implements Iterator {
         private Node current = head;
 
         @Override
-        public Iterator iterator() {
-            return new Iterator() {
-                @Override
-                public boolean hasNext() {
-                    return current != null;
-                }
+        public boolean hasNext() {
+            return current != null;
+        }
 
-                @Override
-                public Object next() {
-                    Object result = current.data;
-                    current = current.next;
-                    return result;
-                }
-            };
+        @Override
+        public Object next() {
+            Object result = current.data;
+            current = current.next;
+            return result;
         }
     }
 
@@ -141,11 +136,7 @@ public class LinkedList implements Collection {
 
     @Override
     public Iterator iterator() {
-        return new LinkedListIterable().iterator();
-    }
-
-    public Iterable getIterable() {
-        return new LinkedListIterable();
+        return new LinkedListIterator();
     }
 
     @Override
@@ -166,7 +157,7 @@ public class LinkedList implements Collection {
         if (a.length < size) {
             return toArray();
         } else {
-            for (Object o: getIterable()) {
+            for (Object o : this) {
                 a[index++] = o;
             }
             for (int i = index; i < a.length; i++) {
@@ -224,7 +215,7 @@ public class LinkedList implements Collection {
     @Override
     public String toString() {
         String result = "";
-        for (Object o: getIterable()) {
+        for (Object o : this) {
             if (!result.isEmpty()) {
                 result += ", ";
             }

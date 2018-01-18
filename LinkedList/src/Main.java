@@ -54,6 +54,10 @@ public class Main {
         System.out.println("After addAll: " + foo + " result:" + arr);
         System.out.println("------------------------");
 
+        System.out.println("Reverse toString result:" + arr.reverseToString());
+        System.out.println("------------------------");
+
+
         // Check retainAll(Collection c)
         arr.retainAll(foo);
         System.out.println("After retainAll: " + foo + " result:" + arr);

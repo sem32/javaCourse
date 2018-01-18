@@ -223,4 +223,13 @@ public class LinkedList implements Collection {
         }
         return "{" + result + "}";
     }
+
+    public String reverseToString() {
+        String result = "";
+        for (Node node = tail; node != null; node = node.prev) {
+            if (!result.isEmpty()) result += ", ";
+            result += node.data;
+        }
+        return "{" + result + "}";
+    }
 }

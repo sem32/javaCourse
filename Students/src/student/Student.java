@@ -21,4 +21,12 @@ public class Student {
         this.surename = surename;
         this.subjects = Subject.init();
     }
+
+    public double getAverageScore() {
+        double result = 0;
+        for (Subject s : subjects) {
+            result += s.getAverageBall();
+        }
+        return result / subjects.size();
+    }
 }

@@ -1,5 +1,6 @@
 import groupStudents.Group;
 import student.Student;
+import student.StudentComparatorByName;
 
 public class Main {
 
@@ -42,7 +43,16 @@ public class Main {
         groupA.addAll(groupB);
 
         /* Alphabetical sorting */
-        groupA.sort();
+        groupA.sort(new StudentComparatorByName());
+
+        /* Sorting by best ball*/
+        groupA.sort((o1, o2) -> {
+            double averageScore1 = o1.getAverageScore();
+            double averageScore2 = o2.getAverageScore();
+            if (averageScore1 > averageScore1) return 1;
+            else if (averageScore1 == averageScore2) return 0;
+            else return -1;
+        });
 
         /* Check if group contains in other group */
         System.out.println("Group " + groupB.getName() + (groupA.containsAll(groupB) ? " is contains" : " not contains") + " in group " + groupA.getName());

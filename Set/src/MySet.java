@@ -9,7 +9,7 @@ public class MySet implements Set {
 
         private Node right;
 
-        private Node parrent;
+        private Node parent;
 
         private int data;
 
@@ -33,6 +33,9 @@ public class MySet implements Set {
             result += toString(node.left);
         }
         result += node.data + " ";
+//        result += " data: " + node.data;
+//        result += " left: " + (node.left != null ? node.left.data : "null");
+//        result += " right: " + (node.right != null ? node.right.data : "null") + ";";
         if (node.right != null) {
             result += toString(node.right);
         }
@@ -55,7 +58,7 @@ public class MySet implements Set {
                 if (currentNode.right == null) {
                     size++;
                     currentNode.right = node;
-                    node.parrent = currentNode;
+                    node.parent = currentNode;
                 } else {
                     add(node, currentNode.right);
                 }
@@ -63,7 +66,7 @@ public class MySet implements Set {
                 if (currentNode.left == null) {
                     size++;
                     currentNode.left = node;
-                    node.parrent = currentNode;
+                    node.parent = currentNode;
                 } else {
                     add(node, currentNode.left);
                 }
@@ -174,50 +177,89 @@ public class MySet implements Set {
         };
     }
 
+    private Node getMin(Node node) {
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node;
+    }
+
+    private boolean remove(Node node) {
+
+        if (node.parent != null) {
+            if (node.right == null && node.left == null) {
+                if (node.parent.left == node) {
+                    node.parent.left = null;
+                } else if (node.parent.right == node) {
+                    node.parent.right = null;
+                }
+            } else if (node.left == null) {
+                if (node.parent.left == node) {
+                    node.parent.left = node.right;
+                } else if (node.parent.right == node) {
+                    node.parent.right = node.right;
+                }
+                node.right.parent = node.parent;
+            } else if (node.right == null ) {
+                if (node.parent.left == node) {
+                    node.parent.left = node.left;
+                } else if (node.parent.right == node) {
+                    node.parent.right = node.left;
+                }
+                node.left.parent = node.parent;
+            }
+        } else if (head == node) {
+            if (node.right == null && node.left == null) {
+                head = null;
+                return true;
+            } else if (node.right == null) {
+                head = node.left;
+
+            } else if (node.left == null) {
+                head = node.right;
+            }
+            head.parent = null;
+        }
+
+        if (node.right != null && node.left != null) {
+            Node min = getMin(node.right);
+            if (min.parent.left == min) {
+                min.parent.left = min.right;
+            } else if (min.parent.right == min) {
+                min.parent.right = min.right;
+            }
+
+            if (node.parent != null) {
+                if (node.parent.right == node) {
+                    node.parent.right = min;
+                } else if (node.parent.left == node) {
+                    node.parent.left = min;
+                }
+            }
+            if (node.left != null) {
+                node.left.parent = min;
+            }
+            if (node.right != null) {
+                node.right.parent = min;
+            }
+            min.parent = node.parent;
+            min.left = node.left;
+            min.right = node.right;
+            if (head == node) {
+                head = min;
+            }
+            node.parent = node.left = node.right = node.parent = null;
+        }
+        return true;
+    }
+
     private boolean remove(int data, Node node) {
         if (node == null) {
             return false;
         }
         if (node.data == data) {
             size--;
-            if (node.parrent != null) {
-                if (node.right == null && node.left == null) {
-                    if (node.parrent.left == node) {
-                        node.parrent.left = null;
-                    } else {
-                        node.parrent.right = null;
-                    }
-                } else if (node.right != null && node.left == null) {
-                    if (node.parrent.left == node) {
-                        node.parrent.left = node.right;
-                    } else {
-                        node.parrent.right = node.right;
-                    }
-                    node.right.parrent = node.parrent;
-                } else if (node.right == null) {
-                    if (node.parrent.left == node) {
-                        node.parrent.left = node.left;
-                    } else {
-                        node.parrent.right = node.left;
-                    }
-                    node.left.parrent = node.parrent;
-                } else {
-                    //TODO split only one leg
-                    System.out.println("TODO split only one leg for parrent");
-                }
-            } else if (head == node) {
-                if (node.right == null && node.left == null) {
-                    head = null;
-                    size = 0;
-                } else if (node.right == null) {
-                    head = node.left;
-                } else if (node.left == null) {
-                    head = node.right;
-                } else {
-                    //TODO split only one leg
-                    System.out.println("TODO split only one leg for head");
-                }
-            }
+            remove(node);
         } else if (data > node.data) {
             remove(data, node.right);
         } else {

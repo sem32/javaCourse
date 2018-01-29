@@ -33,9 +33,6 @@ public class MySet implements Set {
             result += toString(node.left);
         }
         result += node.data + " ";
-//        result += " data: " + node.data;
-//        result += " left: " + (node.left != null ? node.left.data : "null");
-//        result += " right: " + (node.right != null ? node.right.data : "null") + ";";
         if (node.right != null) {
             result += toString(node.right);
         }
